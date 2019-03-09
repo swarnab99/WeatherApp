@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function(event) {   // DOM fully l
     input.value = "";                                             // After entering city name input will be empty
 
   // Make a request 
-  axios.get("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&APPID=416c7d77d4cffdfe15de2535d2fc07d2")
+  axios.get("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&APPID=416c7d77d4cffdfe15de2535d2fc07d2")
   .then(function (response) {
     // success
     console.log(response);
