@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Weather App</title>
+  <style>
+    body{
+      margin: 0px;
+      font-family: Arial, sans-serif;
+      background-color: #d1d1d1;
+    }
+    .main{
+      width: 90%;
+      max-width: 400px;
+      height: 100%;
+      margin: 50px auto;
+      padding: 60px 5px;
+      background: #6686ff;  
+      background: -webkit-linear-gradient(to right, #89f7fe, #6686ff); 
+      background-image: linear-gradient(120deg, #89f7fe 0%, #6686ff 100%);
+      border-radius: 20px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .icon img {
+      height: 80px;
+      widows: 80px;
+    }
+    #clouds {
+      display: block;
+      margin-top: 15px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+    }
+
+    .temp h1 {
+      font-weight: 100;
+      font-size: 7.5rem;
+      margin: 20px 0;
+      padding-left: 8px;
+    }
+    
+    
+    .place h3 {
+      font-weight: 100;
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+    .place img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: -4px;
+      padding-right: 20px;
+      display: inline-block;
+    }
+    .place input {
+      border-radius: 5px;
+      margin-bottom: -20px;
+      margin-top: 60px;
+      width: 60%;
+      background: #fff;
+      font: inherit;
+      box-shadow: 0 6px 10px 0 rgba(0, 0, 0 , .1);
+      border: 0;
+      outline: 0;
+      padding: 8px 18px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="back">
+      <div class="content">
+        <div class="icon">
+          <img id="iconData" src="icon/300.png" alt="icon">
+          <span id="clouds">Haze</span>
+        </div>
+        <div class="temp">
+          <h1><span id="tempData">13</span><span class="small">&#176;</span></h1>
+        </div>
+        <div class="place">
+          <h3><img src="icon/pin.png" alt=""><span id="placeData">City</span></h3>
+          <form id="finder">
+            <input id="city" type="text" name="name" placeholder="Enter Place Name" autofocus autocomplete="off">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {   // DOM fully loaded
+  var main = document.querySelector(".main");  
+  var content = document.querySelector(".content");  
+  const form = document.getElementById('finder');
+  const input = form.querySelector('input');
+  const iconData = document.getElementById('iconData');
+  const cloudData = document.getElementById('clouds');
+  const tempData = document.getElementById('tempData');
+  const placeData = document.getElementById('placeData');
+  
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();		                                        // Prevent page reload
+  
+    var city = input.value;
+    input.value = "";                                             // After entering city name input will be empty
+
+  // Make a request 
+  axios.get("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&APPID=416c7d77d4cffdfe15de2535d2fc07d2")
+  .then(function (response) {
+    // success
+    console.log(response);
+
+    tempData.innerHTML = Math.ceil(response.data.main.temp);                          // Update Temparature Data
+    placeData.innerHTML = `${response.data.name}, ${response.data.sys.country}`;      // Update City
+    cloudData.innerHTML = response.data.weather[0].description;                       // Update Cloud Data
+    iconData.src = `icon/${response.data.weather[0].id}.png`;                         // Update the Icon with weather.id value
+    if(Math.ceil(response.data.main.temp) > 30) {                                     // If Temparature is greater than 30 change bg-color
+      main.style.backgroundImage = "linear-gradient(120deg, #e55b5b73 0%, #e55b5b 100%)";
+    } else {
+      main.style.backgroundImage = "linear-gradient(120deg, #89f7fe 0%, #6686ff 100%)";
+    }
+  })
+  .catch(function (error) {
+    // error
+    console.log(error);
+    alert(city + ' Not Found.');
+    navigator.vibrate(100000);
+  });
+
+  });  // form add Event listener
+  
+  });  // document ready function     
+</script>
+</body>
+</html>
